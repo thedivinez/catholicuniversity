@@ -21,6 +21,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.11.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-datepicker": "^6.2.0",
