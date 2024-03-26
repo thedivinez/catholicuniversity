@@ -16,10 +16,10 @@ const SideBar = () => {
                     </div>
                 ))}
             </div>
-            <button className='flex items-center space-x-3 mb-2 cursor-pointer w-full text-yellow-500/90 hover:text-yellow-500 justify-center text-sm font-medium'>
+            <a href='/signin' className='flex items-center space-x-3 mb-2 cursor-pointer w-full text-yellow-500/90 hover:text-yellow-500 justify-center text-sm font-medium'>
                 <IoPowerSharp className='h-5 w-5' />
                 <span>Sign Out</span>
-            </button>
+            </a>
         </aside>
     )
 }

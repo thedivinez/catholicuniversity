@@ -4,7 +4,7 @@ import TextInputField from '@/components/TextInputField'
 const SignUp = () => {
     return (
         <main className="flex h-screen w-screen flex-col items-center justify-center">
-            <div className="flex flex-col items-center w-1/3">
+            <div className="flex flex-col items-center w-1/4">
                 <Image
                     priority
                     width={108}
@@ -13,14 +13,9 @@ const SignUp = () => {
                     alt="Catholic University Logo"
                 />
                 <div className="flex flex-col w-full mt-8 space-y-3">
-                    <div className="flex space-x-3">
-                        <TextInputField labelText="Email" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
-                        <TextInputField labelText="Reg Number" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
-                    </div>
-                    <div className="flex space-x-3">
-                        <TextInputField labelText="First Name" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
-                        <TextInputField labelText="Last Name" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
-                    </div>
+                    <TextInputField labelText="Reg Number" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
+                    <TextInputField labelText="Company" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
+                    <TextInputField labelText="Starting Date" type="date" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full py-2 text-sm" />
                     <TextInputField labelText="Password" className="bg-transparent border border-slate-400 outline-none text-white w-full" type="password" placeholder={""} />
                 </div>
                 <button className="bg-yellow-500 mt-5 w-full py-2 rounded-md font-medium hover:bg-yellow-500/90 text-slate-900">Sign In</button>

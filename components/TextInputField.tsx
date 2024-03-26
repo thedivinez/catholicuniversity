@@ -1,7 +1,8 @@
 "use client"
-import { IconType } from "react-icons"
-import { ChangeEventHandler, ReactNode, useState } from "react"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
+import { ChangeEventHandler, ReactNode, useState } from "react"
 
 interface Props {
   id?: string
@@ -20,12 +21,19 @@ interface Props {
 
 const TextInputField: React.FC<Props> = (props) => {
   const [showPassword, setShowPassword] = useState(true)
+  const [startDate, setStartDate] = useState(new Date());
   return (
     <div className="flex flex-col w-full">
       <label htmlFor={props.id ?? props.name} className="text-xs font-normal text-slate-300">
         {props.labelText}
       </label>
-      <div className="relative w-full flex">
+
+      {props.type == "date" ? <DatePicker
+        name={props.name} selected={new Date()}
+        onChange={(date) => setStartDate(date!)}
+        className={`mt-2 w-full rounded-lg bg-slate-200 p-3 pr-8 text-slate-900 shadow-sm ${props.className}`}
+
+      /> : <div className="relative w-full flex">
         {props.multiLine ?? false ? (
           <textarea
             id={props.id}
@@ -33,7 +41,7 @@ const TextInputField: React.FC<Props> = (props) => {
             value={props.value}
             required={props.isRequired}
             placeholder={props.placeholder}
-            className={`mt-2 w-full rounded-lg bg-slate-200 p-3 pr-8 text-slate-900 shadow-sm ${props.className ?? ""}`}
+            className={`mt-2 w-full rounded-lg bg-slate-200 p-3 pr-8 text-slate-900 shadow-sm ${props.className}`}
           />
         ) : (
           <input
@@ -63,7 +71,7 @@ const TextInputField: React.FC<Props> = (props) => {
             {props.Icon}
           </span>
         )}
-      </div>
+      </div>}
     </div>
   )
 }
