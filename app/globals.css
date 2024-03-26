@@ -18,16 +18,54 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-image: linear-gradient(
+    to right top,
+    #051937,
+    #041a47,
+    #121a56,
+    #271562,
+    #3e056b
+  );
+}
+
+textarea {
+  width: -moz-available;
+  height: 100%;
+  resize: none;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Scroll thumb styles */
+::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c5272;
+  border-radius: 1rem;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #3c5272;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3c5272;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Scroll track styles (Background) */
+::-webkit-scrollbar-track {
+  background: #142236;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track:hover,
+::-webkit-scrollbar-track:active {
+  background: #131314;
 }
