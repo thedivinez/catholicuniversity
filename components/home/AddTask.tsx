@@ -1,22 +1,42 @@
 import "@/lib/extensions"
+import axios from "axios";
+import toast from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import { Fragment, useState } from 'react'
 import usePlatformState from "@/hooks/store";
+import { useSession } from "next-auth/react";
 import { LogBookTable } from "@/types/types";
 import { IoAddCircle } from 'react-icons/io5'
 import { IoMdCloseCircle } from 'react-icons/io'
+import CustomToast from "../notifier/CustomToast";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dialog, Transition } from '@headlessui/react'
 import CustomOptionsDropdown from "../CustomOptionsDropdown";
 
 export default function AddTask() {
+    const { data } = useSession()
     let [isOpen, setIsOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [startDate, setStartDate] = useState(new Date());
+    const tasks = usePlatformState((state) => state.assessment)
+
+    const weeks = (function () {
+        let data: string[] = []
+        const all = [...Array(8).keys()].map(i => `Week ${i + 1}`)
+        all.forEach((label) => { if (!tasks.findLast((task) => task.week == label)) return data.push(label) })
+        return data
+    })()
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const credentials = e.target.toJson() as LogBookTable
-        usePlatformState.getState().addNewTask(credentials)
+        if (!loading) {
+            setLoading(true)
+            const task = { ...e.target.toJson(), regNumber: data?.user.regNumber } as LogBookTable
+            const response = await axios.post('/api/assessment', task)
+            toast.custom((t) => <CustomToast t={t} type="success" heading="Tasks" message={response.data} />)
+            usePlatformState.getState().addNewTask(task)
+            setLoading(false)
+        }
     }
 
     return (
@@ -53,7 +73,7 @@ export default function AddTask() {
                                         <IoMdCloseCircle className='h-6 w-6 cursor-pointer' onClick={_ => setIsOpen(false)} />
                                     </Dialog.Title>
                                     <form className="flex flex-col p-10 bg-indigo-900/70 space-y-5 text-sm" onSubmit={onSubmit}>
-                                        <CustomOptionsDropdown name="week" className='text-white rounded-lg bg-transparent border border-slate-400/60 w-full font-medium cursor-pointer' options={[...Array(8).keys()].map(i => `Week ${i + 1}`)} />
+                                        <CustomOptionsDropdown name="week" className='text-white rounded-lg bg-transparent border border-slate-400/60 w-full font-medium cursor-pointer' options={weeks} />
                                         <div className='flex w-full justify-between space-x-10'>
                                             <div className='flex flex-col w-full space-y-1.5'>
                                                 <label className='text-slate-300 text-sm font-medium'>Date</label>

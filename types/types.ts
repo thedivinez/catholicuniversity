@@ -1,6 +1,7 @@
 import { IconType } from "react-icons";
 
 export interface User {
+    id: string;
     phone: string;
     email: string;
     degree: string;
@@ -10,6 +11,7 @@ export interface User {
     regNumber: string;
     firstName: string;
     supervisor: string;
+    startingDate: string;
     organization: string;
 }
 
@@ -25,5 +27,12 @@ export interface LogBookTable {
     date: string;
     task: string;
     comments: string;
+    regNumber: string;
+    supervisor: string;
+}
+
+export interface Notification {
+    id: string;
+    message: string;
     supervisor: string;
 }

@@ -1,10 +1,27 @@
+import useFetch from 'use-http'
 import AddTask from "./AddTask";
+import { useEffect } from 'react';
 import usePlatformState from "@/hooks/store";
+import { useSession } from 'next-auth/react';
 import { FaChevronUp } from "react-icons/fa6";
 import { Disclosure } from '@headlessui/react';
 
 const Assessment = () => {
+    const { data } = useSession()
+    const { get, loading, error } = useFetch()
     const tasks = usePlatformState((state) => state.assessment)
+
+    useEffect(() => {
+        get(`/api/assessment?uid=${data?.user.regNumber}`).then((response) => {
+            if (response.data != undefined) {
+                usePlatformState.setState((state) => { state.assessment = response.data })
+            }
+        }).catch(console.log)
+    }, [data, get])
+
+    if (loading) return <div className='flex flex-col h-full'>Loading</div>
+    if (error) return <div className='flex flex-col h-full'>Failed to load tasks</div>
+
     return (
         <div className="flex flex-col mt-10 2xl:mt-20 w-3/4 2xl:w-2/3 space-y-6 h-full overflow-y-auto">
             {tasks.map((week) => <Disclosure key={week.week}>

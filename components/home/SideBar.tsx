@@ -1,4 +1,4 @@
-"use client"
+import { signOut } from 'next-auth/react'
 import usePlatformState from '@/hooks/store'
 import sideBarItems from '@/lib/sidebaritems'
 import { IoPowerSharp } from 'react-icons/io5'
@@ -16,10 +16,10 @@ const SideBar = () => {
                     </div>
                 ))}
             </div>
-            <a href='/signin' className='flex items-center space-x-3 mb-2 cursor-pointer w-full text-yellow-500/90 hover:text-yellow-500 justify-center text-sm font-medium'>
+            <button onClick={_ => signOut()} className='flex items-center space-x-3 mb-2 cursor-pointer w-full text-yellow-500/90 hover:text-yellow-500 justify-center text-sm font-medium'>
                 <IoPowerSharp className='h-5 w-5' />
                 <span>Sign Out</span>
-            </a>
+            </button>
         </aside>
     )
 }
