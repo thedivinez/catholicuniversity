@@ -2,6 +2,7 @@ import mysql from 'serverless-mysql';
 
 const db = mysql({
     config: {
+        ssl: process.env.MYSQL_SSL,
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
         port: Number(process.env.MYSQL_PORT),

@@ -36,3 +36,10 @@ export interface Notification {
     message: string;
     supervisor: string;
 }
+
+export interface Student {
+    id: string;
+    name: string;
+    phone: string;
+    email: string;
+}

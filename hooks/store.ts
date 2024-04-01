@@ -1,9 +1,10 @@
 import { create } from 'zustand'
 import sideBarItems from '@/lib/sidebaritems';
 import { immer } from 'zustand/middleware/immer';
-import { LogBookTable, SideBarItem, Notification } from '@/types/types';
+import { LogBookTable, SideBarItem, Notification, Student } from '@/types/types';
 
 type State = {
+    students: Student[];
     sideBarItem: SideBarItem
     assessment: LogBookTable[]
     notifications: Notification[];
@@ -15,6 +16,7 @@ type Action = {
 }
 
 const usePlatformState = create<State & Action>()(immer((set) => ({
+    students: [],
     assessment: [],
     notifications: [],
     sideBarItem: sideBarItems[0],

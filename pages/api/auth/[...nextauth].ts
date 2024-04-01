@@ -19,11 +19,16 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             const results = await excuteQuery(`SELECT * FROM users WHERE regNumber='${credentials?.regNumber}' AND password='${credentials?.password}'`)
             if (results.length > 0) {
               const existingdb = await excuteQuery(`SELECT * FROM existingdb WHERE regNumber='${credentials?.regNumber}'`)
-              const supervisor = await excuteQuery(`SELECT * FROM existingdb WHERE regNumber='${results[0].supervisor}'`)
-              if (results) return { ...results[0], ...existingdb[0], supervisor: `${supervisor[0].firstName} ${supervisor[0].lastName}` } as User
+              if (results[0].userType == "student") {
+                const supervisor = await excuteQuery(`SELECT * FROM existingdb WHERE regNumber='${results[0].supervisor}'`)
+                if (results) return { ...results[0], ...existingdb[0], supervisor: `${supervisor[0].firstName} ${supervisor[0].lastName}` } as User
+              } else {
+                if (results) return { ...results[0], ...existingdb[0] } as User
+              }
             }
             throw { response: { data: "Incorrect username or password" } }
           } catch (error: any) {
+            console.log(error)
             throw new Error(error.response ? error.response.data : "Failed to connect to server. Please check your internet connection and try again.")
           }
         },

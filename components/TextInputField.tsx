@@ -1,4 +1,3 @@
-"use client"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
@@ -29,7 +28,7 @@ const TextInputField: React.FC<Props> = (props) => {
       </label>
 
       {props.type == "date" ? <DatePicker
-        name={props.name} selected={new Date()}
+        name={props.name} selected={startDate}
         onChange={(date) => setStartDate(date!)}
         className={`mt-2 w-full rounded-lg bg-slate-200 p-3 pr-8 text-slate-900 shadow-sm ${props.className}`}
 

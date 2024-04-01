@@ -1,29 +1,35 @@
 import useFetch from 'use-http'
 import AddTask from "./AddTask";
-import { useEffect } from 'react';
+import SHeader from './supervisor/SHeader';
+import { useEffect, useState } from 'react';
 import usePlatformState from "@/hooks/store";
 import { useSession } from 'next-auth/react';
 import { FaChevronUp } from "react-icons/fa6";
 import { Disclosure } from '@headlessui/react';
+import SupervisorSideBar from './supervisor/SSideBar';
+import PDFExport from '../PDFExport';
 
 const Assessment = () => {
     const { data } = useSession()
     const { get, loading, error } = useFetch()
     const tasks = usePlatformState((state) => state.assessment)
+    const [selected, setSelected] = useState(data?.user.regNumber!)
 
     useEffect(() => {
-        get(`/api/assessment?uid=${data?.user.regNumber}`).then((response) => {
+        get(`/api/assessment?uid=${selected}`).then((response) => {
             if (response.data != undefined) {
                 usePlatformState.setState((state) => { state.assessment = response.data })
             }
         }).catch(console.log)
-    }, [data, get])
+    }, [data, get, selected])
 
     if (loading) return <div className='flex flex-col h-full'>Loading</div>
     if (error) return <div className='flex flex-col h-full'>Failed to load tasks</div>
 
-    return (
-        <div className="flex flex-col mt-10 2xl:mt-20 w-3/4 2xl:w-2/3 space-y-6 h-full overflow-y-auto">
+    return (<div className={`flex w-full h-full ${data?.user.userType == "supervisor" ? 'justify-between pl-80' : 'justify-center'}`}>
+        <div className="flex flex-col 2xl:mt-20 w-3/4 2xl:w-2/3 space-y-6 h-full overflow-y-auto">
+            <PDFExport />
+            {selected != data?.user.regNumber! && <SHeader selected={selected} />}
             {tasks.map((week) => <Disclosure key={week.week}>
                 {({ open }) => (
                     <div>
@@ -56,8 +62,10 @@ const Assessment = () => {
                     </div>
                 )}
             </Disclosure>)}
-            <AddTask />
+            {data?.user.userType != "supervisor" && <AddTask />}
         </div>
+        {data?.user.userType == "supervisor" && <SupervisorSideBar selected={selected} setSelected={setSelected} />}
+    </div>
     )
 }
 
