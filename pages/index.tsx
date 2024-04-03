@@ -29,7 +29,7 @@ const Home: NextPage = () => {
     return (
         <div className="max-w-screen flex h-screen max-h-screen select-none flex-col items-center justify-center text-xs">
             <div className="relative h-20 w-20">
-                <Image alt="" src="/img/globegif.gif" unoptimized width={100} height={100} />
+                <Image alt="" src="/loading.gif" unoptimized width={100} height={100} />
             </div>
             <span className="text-white">Loading...</span>
         </div>

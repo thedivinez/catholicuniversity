@@ -17,7 +17,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         async authorize(credentials) {
           try {
             const results = await excuteQuery(`SELECT * FROM users WHERE regNumber='${credentials?.regNumber}' AND password='${credentials?.password}'`)
-            if (results.length > 0) {
+            if (results.isNotEmpty()) {
               const existingdb = await excuteQuery(`SELECT * FROM existingdb WHERE regNumber='${credentials?.regNumber}'`)
               if (results[0].userType == "student") {
                 const progress = await excuteQuery("SELECT COUNT(*) AS count FROM assessment")

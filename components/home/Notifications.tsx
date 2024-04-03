@@ -52,7 +52,7 @@ const Notifications = () => {
     return (
         <div className='flex flex-col w-3/4 2xl:w-2/3 my-16 space-y-5 justify-between'>
             <div className='flex flex-col space-y-5'>
-                {notifications.isNotEmpty() && <p className='text-slate-300 text-center'> There are not any notifications available </p>}
+                {notifications.isEmpty() && <p className='text-slate-300 text-center'> There are not any notifications available </p>}
                 {notifications.map((notification) => <div key={notification.id} className='bg-slate-600/70 rounded-lg p-2 relative cursor-pointer'>
                     <p className='text-sm'>{notification.message}</p>
                     {data?.user.userType == "supervisor" && <IoMdClose className='absolute right-1 top-1 text-red-500' onClick={_ => onDelete(notification.id)} />}

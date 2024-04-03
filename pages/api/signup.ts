@@ -5,9 +5,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     try {
         const student = await excuteQuery(`SELECT * FROM existingdb WHERE regNumber='${req.body.regNumber}'`)
-        if (student.length != 0) {
+        if (student.isNotEmpty()) {
             const supervisor = await excuteQuery(`SELECT * FROM existingdb WHERE regNumber='${req.body.regNumber}'`)
-            if (supervisor.length != 0) {
+            if (supervisor.isNotEmpty()) {
                 await insertOne("users", { id: uuid(), ...req.body, userType: "student" });
                 res.status(200).send("user has been created")
             } else {

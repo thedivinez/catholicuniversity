@@ -31,12 +31,12 @@ const Assessment = () => {
         <div className="flex flex-col 2xl:mt-20 w-3/4 2xl:w-2/3 space-y-6 h-full overflow-y-auto mt-5">
             {data?.user.userType == "student" && tasks.isNotEmpty() && <PDFExport tasks={tasks} student={{
                 id: selected,
-                programme: data?.user.degree,
+                programme: data?.user.programme,
                 phone: data?.user.phone, email: data?.user.email,
                 name: `${data?.user.firstName} ${data?.user.lastName}`,
             }} />}
             {selected != data?.user.regNumber && <SHeader selected={selected} />}
-            {(selected != data?.user.regNumber!) && tasks.length == 0 && <p className='text-slate-300 text-center'>
+            {(selected != data?.user.regNumber!) && tasks.isEmpty() && <p className='text-slate-300 text-center'>
                 {data?.user.userType == "supervisor" ? "This student has not added any task yet" : "You have not added any task yet"}
             </p>}
             {(selected == data?.user.regNumber! && data?.user.userType == "supervisor") && <p className='text-slate-300 text-center'>

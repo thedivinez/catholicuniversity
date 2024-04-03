@@ -46,10 +46,10 @@ const Profile = () => {
                             </div>
                         </div>}
                         <div className='flex flex-col mt-6'>
-                            <span className='text-slate-300 font-medium'>{data?.user.userType == "student" ? "Degree" : "Faculty"}</span>
+                            <span className='text-slate-300 font-medium'>{data?.user.userType == "student" ? "programme" : "Faculty"}</span>
                             <div className='flex mt-2 items-center text-slate-300 space-x-2'>
                                 <FaUserGraduate className='h-8 w-8 bg-yellow-500 rounded-full text-blue-900 p-1' />
-                                <span>{data?.user.degree}</span>
+                                <span>{data?.user.programme}</span>
                             </div>
                         </div>
                     </div>

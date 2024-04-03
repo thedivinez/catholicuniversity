@@ -45,7 +45,7 @@ export default function SignIn() {
                     <TextInputField name="regNumber" labelText="Reg / EC Number" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
                     <TextInputField name="password" labelText="Password" className="bg-transparent border border-slate-400 outline-none text-white w-full" type="password" placeholder={""} />
                 </div>
-                <button type="submit" className="bg-yellow-500 mt-5 w-full py-2 rounded-md font-medium hover:bg-yellow-500/90 text-slate-900 text-center">Sign In</button>
+                <button disabled={loading} className={`${loading ? "bg-yellow-700" : "bg-yellow-500"} mt-5 w-full py-2 rounded-md font-medium hover:bg-yellow-500/90 text-slate-900 text-center`}>{loading ? "Signing In..." : "Sign In"}</button>
                 <div className="flex text-sm justify-between w-full mt-4 text-slate-300">
                     <span>Don&apos;t Have An Account?</span>
                     <Link href="/signup" className="text-yellow-500 cursor-pointer underline underline-offset-2">Sign Up</Link>

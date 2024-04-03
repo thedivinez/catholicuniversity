@@ -4,7 +4,7 @@ export interface User {
     id: string;
     phone: string;
     email: string;
-    degree: string;
+    programme: string;
     lastName: string;
     progress: number;
     userType: string;
