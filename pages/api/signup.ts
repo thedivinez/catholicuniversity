@@ -11,7 +11,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                 await insertOne("users", { id: uuid(), ...req.body, userType: "student" });
                 res.status(200).send("user has been created")
             } else {
-                res.status(403).send("Inavid supervisor EC Number please check and try again")
+                res.status(403).send("Invalid supervisor EC Number please check and try again")
             }
         } else {
             res.status(403).send("Invalid student Reg Number please check and try again")
