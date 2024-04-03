@@ -42,7 +42,7 @@ export default function SignIn() {
                     alt="Catholic University Logo"
                 />
                 <div className="flex flex-col w-full mt-8 space-y-3">
-                    <TextInputField name="regNumber" labelText="Reg Number" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
+                    <TextInputField name="regNumber" labelText="Reg / EC Number" placeholder="" className="bg-transparent border border-slate-400 outline-none text-white w-full" />
                     <TextInputField name="password" labelText="Password" className="bg-transparent border border-slate-400 outline-none text-white w-full" type="password" placeholder={""} />
                 </div>
                 <button type="submit" className="bg-yellow-500 mt-5 w-full py-2 rounded-md font-medium hover:bg-yellow-500/90 text-slate-900 text-center">Sign In</button>

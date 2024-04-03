@@ -2,6 +2,7 @@ import useFetch from 'use-http';
 import React, { useEffect } from 'react'
 import usePlatformState from '@/hooks/store';
 import { useSession } from 'next-auth/react';
+import { FaArrowRight } from "react-icons/fa";
 
 interface Props {
     selected: string;
@@ -23,11 +24,14 @@ const SupervisorSideBar: React.FC<Props> = (props) => {
 
     return (
         <aside className='w-44 h-full pb-4 flex flex-col bg-indigo-700/30 text-slate-300 items-center'>
-            <span className='bg-slate-800/70 w-full p-2 text-center font-medium mb-5'>Students</span>
+            <span className='bg-slate-800/70 w-full p-2 text-center font-medium mb-5 text-white'>Students</span>
             {loading ? <div className='flex flex-col h-full justify-center'>Loading...</div> : error ? <div className='flex flex-col h-full justify-center'>Failed to load...</div> : students.map((student) => (
-                <span key={student.id} className={`text-center cursor-pointer hover:bg-slate-800/70 hover:text-yellow-500 w-full py-2 ${props.selected == student.id ? "bg-slate-800/70 text-yellow-500" : "bg-slate-800/30"}`} onClick={_ => props.setSelected(student.id)}>
-                    {student.name}
-                </span>
+                <div key={student.id} className={`flex space-x-5 font-bold justify-center border border-yellow-500/20 text-center cursor-pointer hover:bg-slate-800/70 hover:text-yellow-500 w-full py-2 ${props.selected == student.id ? "bg-slate-800/70 text-yellow-500" : "bg-slate-800/30"}`}>
+                    {props.selected == student.id && <FaArrowRight className='h-5 w-5' />}
+                    <span onClick={_ => props.setSelected(student.id)}>
+                        {student.name}
+                    </span>
+                </div>
             ))}
         </aside>
     )

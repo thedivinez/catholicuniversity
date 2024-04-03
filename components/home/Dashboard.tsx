@@ -10,7 +10,7 @@ const Profile = () => {
         <div className="flex flex-col w-4/5 mt-10 pb-5 2xl:w-3/4">
             <div className='flex rounded-t-2xl mt-5 h-40 bg-yellow-500 relative justify-end items-start p-3'>
                 <FaUser className="rounded-full  text-slate-400 pt-1.5 h-20 w-20 absolute -bottom-10 bg-white left-16" />
-                <span className='text-blue-900  font-semibold'>Reg: {data?.user.regNumber}</span>
+                <span className='text-blue-900  font-semibold'>{data?.user.userType == "student" ? "Reg:" : "EC"} {data?.user.regNumber}</span>
             </div>
             <div className='flex justify-between h-96 bg-indigo-700/30 rounded-b-2xl py-14 px-10 text-sm'>
                 <div className='flex flex-col'>

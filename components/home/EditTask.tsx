@@ -1,46 +1,44 @@
 import "@/lib/extensions"
-import { useFetch } from "use-http";
+import useFetch from "use-http";
 import toast from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import { Fragment, useState } from 'react'
 import usePlatformState from "@/hooks/store";
 import { useSession } from "next-auth/react";
 import { LogBookTable } from "@/types/types";
-import { IoAddCircle } from 'react-icons/io5'
+import { MdOutlineEdit } from "react-icons/md";
 import { IoMdCloseCircle } from 'react-icons/io'
 import CustomToast from "../notifier/CustomToast";
 import "react-datepicker/dist/react-datepicker.css";
 import { Dialog, Transition } from '@headlessui/react'
-import CustomOptionsDropdown from "../CustomOptionsDropdown";
 
-export default function AddTask() {
-    const { data } = useSession()
+interface Props {
+    selected: string
+    task: LogBookTable
+}
+
+const EditTask: React.FC<Props> = (props) => {
+    const { data: session } = useSession()
     let [isOpen, setIsOpen] = useState(false)
-    const { post, loading, error } = useFetch()
-    const [startDate, setStartDate] = useState(new Date());
-    const tasks = usePlatformState((state) => state.assessment)
-
-    const weeks = (function () {
-        let data: string[] = []
-        const all = [...Array(8).keys()].map(i => `Week ${i + 1}`)
-        all.forEach((label) => { if (!tasks.findLast((task) => task.week == label)) return data.push(label) })
-        return data
-    })()
+    const { patch, loading, error } = useFetch()
+    const [startDate, setStartDate] = useState(new Date(props.task.date));
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!loading) {
-            const task = { ...e.target.toJson(), regNumber: data?.user.regNumber } as LogBookTable
-            const response = await post('/api/assessment', task)
-            console.log(response.data)
+            const task = { ...e.target.toJson(), regNumber: props.selected } as LogBookTable
+            const response = await patch('/api/assessment', task)
+            usePlatformState.setState((state) => {
+                const index = state.assessment.findLastIndex((ass) => ass.id == response.data.task.id)
+                state.assessment[index] = response.data.task
+            })
             toast.custom((t) => <CustomToast t={t} type="success" heading="Tasks" message={response.data.message} />)
-            usePlatformState.getState().addNewTask(response.data.task)
         }
     }
 
     return (
         <>
-            <IoAddCircle className="text-yellow-500 rounded-full ml-auto w-10 h-10 cursor-pointer hover:text-yellow-500/80" onClick={_ => setIsOpen(!isOpen)} />
+            <MdOutlineEdit className='absolute right-0 bg-yellow-500 rounded-full h-6 w-6 p-0.5 text-slate-900 cursor-pointer' onClick={_ => setIsOpen(!isOpen)} />
             <Transition appear show={isOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={_ => setIsOpen(false)}>
                     <Transition.Child
@@ -68,32 +66,31 @@ export default function AddTask() {
                             >
                                 <Dialog.Panel className="w-2/5 transform overflow-hidden rounded-lg bg-slate-800 text-left align-middle shadow-xl transition-all">
                                     <Dialog.Title as="h3" className="flex justify-between text-md font-semibold bg-yellow-500 text-slate-800 p-2 items-center" >
-                                        <span>Add New Task</span>
+                                        <span>Update Task</span>
                                         <IoMdCloseCircle className='h-6 w-6 cursor-pointer' onClick={_ => setIsOpen(false)} />
                                     </Dialog.Title>
                                     <form className="flex flex-col p-10 bg-indigo-900/70 space-y-5 text-sm" onSubmit={onSubmit}>
-                                        <CustomOptionsDropdown name="week" className='text-white rounded-lg bg-transparent border border-slate-400/60 w-full font-medium cursor-pointer' options={weeks} />
                                         <div className='flex w-full justify-between space-x-10'>
-                                            <div className='flex flex-col w-full space-y-1.5'>
-                                                <label className='text-slate-300 text-sm font-medium'>Date</label>
-                                                <DatePicker name="date" selected={startDate} onChange={(date) => setStartDate(date!)} className='px-2 p-1.5 text-white outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
+                                            <div className={`flex flex-col w-full space-y-1.5 ${session?.user.userType == "supervisor" ? "text-slate-400" : "text-white"}`}>
+                                                <label className='text-sm font-medium'>Date</label>
+                                                <DatePicker name="date" disabled={session?.user.userType == "supervisor"} selected={startDate} onChange={(date) => setStartDate(date!)} className='px-2 p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
                                             </div>
-                                            <div className='flex flex-col w-full space-y-1.5'>
-                                                <label className='text-slate-300 font-medium'>Supervisor</label>
-                                                <input name="supervisor" className='p-1.5 text-white outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
+                                            <div className={`flex flex-col w-full space-y-1.5 ${session?.user.userType == "supervisor" ? "text-slate-400" : "text-white"}`}>
+                                                <label className='font-medium'>Supervisor</label>
+                                                <input name="supervisor" disabled={session?.user.userType == "supervisor"} className='p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' defaultValue={props.task.supervisor} />
                                             </div>
                                         </div>
-                                        <div className='flex flex-col w-full space-y-1.5'>
-                                            <label className='text-slate-300 font-medium'>Task Description</label>
-                                            <textarea name="task" className='px-2 p-1.5 text-white outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
+                                        <div className={`flex flex-col w-full space-y-1.5 ${session?.user.userType == "supervisor" ? "text-slate-400" : "text-white"}`}>
+                                            <label className='font-medium'>Task Description</label>
+                                            <textarea name="task" disabled={session?.user.userType == "supervisor"} className='px-2 p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' defaultValue={props.task.task} />
                                         </div>
-                                        <div className='flex flex-col w-full space-y-1.5'>
-                                            <label className='text-slate-300 font-medium'>Comments</label>
-                                            <textarea name="comments" className='px-2 p-1.5 text-white outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
+                                        <div className={`flex flex-col w-full space-y-1.5 ${session?.user.userType == "supervisor" ? "text-slate-400" : "text-white"}`}>
+                                            <label className='font-medium'>Student Comments</label>
+                                            <textarea name="comments" disabled={session?.user.userType == "supervisor"} className='px-2 p-1.5outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' defaultValue={props.task.comments} />
                                         </div>
-                                        <div className={`flex flex-col w-full space-y-1.5 ${data?.user.userType == "student" ? "text-slate-400" : "text-white"}`}>
+                                        <div className={`flex flex-col w-full space-y-1.5 ${session?.user.userType == "student" ? "text-slate-400" : "text-white"}`}>
                                             <label className='font-medium'>Supervisor Comments</label>
-                                            <textarea name="supervisorComment" disabled={data?.user.userType == "student"} className='px-2 p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
+                                            <textarea name="supervisorComment" disabled={session?.user.userType == "student"} className='px-2 p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' defaultValue={props.task.supervisorComment} />
                                         </div>
                                         <button type="submit" className='bg-yellow-500 py-2 rounded-md hover:bg-yellow-500/90 ml-auto px-10 text-slate-800 font-medium'>Submit</button>
                                     </form>
@@ -106,3 +103,5 @@ export default function AddTask() {
         </>
     )
 }
+
+export default EditTask

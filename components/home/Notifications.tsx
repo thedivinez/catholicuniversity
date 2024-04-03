@@ -1,3 +1,4 @@
+import axios from 'axios';
 import useFetch from 'use-http'
 import toast from 'react-hot-toast';
 import { VscSend } from "react-icons/vsc";
@@ -8,7 +9,6 @@ import { Notification } from '@/types/types';
 import TextInputField from '../TextInputField'
 import CustomToast from '../notifier/CustomToast';
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 
 const Notifications = () => {
     const { data } = useSession()
@@ -42,9 +42,9 @@ const Notifications = () => {
     const onDelete = async (notificationId: string) => {
         if (!submiting) {
             setSubmiting(true)
-            await axios.delete('/api/notifications?uid=${notificationId}')
+            await axios.delete(`/api/notifications?uid=${notificationId}`)
             toast.custom((t) => <CustomToast t={t} type="success" heading="Notifications" message="Notification has been deleted" />)
-            usePlatformState.setState((state) => state.notifications = state.notifications.filter((notification) => notification.id != notificationId))
+            usePlatformState.setState((state) => { state.notifications = state.notifications.filter((notification) => notification.id != notificationId) })
             setSubmiting(false)
         }
     }
@@ -52,9 +52,10 @@ const Notifications = () => {
     return (
         <div className='flex flex-col w-3/4 2xl:w-2/3 my-16 space-y-5 justify-between'>
             <div className='flex flex-col space-y-5'>
+                {notifications.isNotEmpty() && <p className='text-slate-300 text-center'> There are not any notifications available </p>}
                 {notifications.map((notification) => <div key={notification.id} className='bg-slate-600/70 rounded-lg p-2 relative cursor-pointer'>
                     <p className='text-sm'>{notification.message}</p>
-                    <IoMdClose className='absolute right-1 top-1 text-red-500' onClick={_ => onDelete(notification.id)} />
+                    {data?.user.userType == "supervisor" && <IoMdClose className='absolute right-1 top-1 text-red-500' onClick={_ => onDelete(notification.id)} />}
                 </div>)}
             </div>
             {data?.user.userType == "supervisor" &&

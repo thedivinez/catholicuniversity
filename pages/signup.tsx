@@ -14,15 +14,20 @@ const SignUp = () => {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!loading) {
-            setLoading(true)
-            await axios.post('/api/signup', e.target.toJson())
-            const response = await signIn("credentials", { ...e.target.toJson(), redirect: false })
-            if (response?.ok) {
-                router.replace("/", undefined, { shallow: true })
-            } else {
-                toast.custom((t) => <CustomToast t={t} type="error" heading="Authentication" message={response?.error!} />)
+            try {
+                setLoading(true)
+                await axios.post('/api/signup', e.target.toJson())
+                const response = await signIn("credentials", { ...e.target.toJson(), redirect: false })
+                if (response?.ok) {
+                    router.replace("/", undefined, { shallow: true })
+                } else {
+                    toast.custom((t) => <CustomToast t={t} type="error" heading="Authentication" message={response?.error!} />)
+                }
+            } catch (error: any) {
+                toast.custom((t) => <CustomToast t={t} type="error" heading="Authentication" message={error.response.data} />)
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
         }
     }
 

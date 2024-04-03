@@ -13,6 +13,7 @@ export default async function Students(req: NextApiRequest, res: NextApiResponse
                     phone: existingdb[0].phone,
                     email: existingdb[0].email,
                     id: existingdb[0].regNumber,
+                    programme: existingdb[0].degree,
                     name: `${existingdb[0].firstName} ${existingdb[0].lastName}`,
                 })
             }

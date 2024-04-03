@@ -23,12 +23,14 @@ export interface SideBarItem {
 }
 
 export interface LogBookTable {
+    id: string
     week: string;
     date: string;
     task: string;
     comments: string;
     regNumber: string;
     supervisor: string;
+    supervisorComment: string
 }
 
 export interface Notification {
@@ -42,4 +44,5 @@ export interface Student {
     name: string;
     phone: string;
     email: string;
+    programme: string;
 }

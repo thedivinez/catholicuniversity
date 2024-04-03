@@ -21,6 +21,16 @@ const insertOne = async (table: string, data: Object) => {
     }
 }
 
+const updateOne = async (table: string, data: Object, where: string) => {
+    try {
+        const results = await db.query(`UPDATE ${table} SET ? WHERE date=?`, [data, where]);
+        await db.end();
+        return results;
+    } catch (error) {
+        return error;
+    }
+}
+
 export default async function excuteQuery(query: string, values?: any[]) {
     try {
         const results = await db.query(query, values);
@@ -31,4 +41,4 @@ export default async function excuteQuery(query: string, values?: any[]) {
     }
 }
 
-export { insertOne }
+export { db, insertOne, updateOne }
