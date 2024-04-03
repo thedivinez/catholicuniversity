@@ -1,3 +1,4 @@
+import axios from 'axios';
 import useFetch from 'use-http'
 import AddTask from "./AddTask";
 import EditTask from './EditTask';
@@ -5,41 +6,40 @@ import PDFExport from '../PDFExport';
 import SHeader from './supervisor/SHeader';
 import { useEffect, useState } from 'react';
 import usePlatformState from "@/hooks/store";
-import { useSession } from 'next-auth/react';
 import { FaChevronUp } from "react-icons/fa6";
 import { Disclosure } from '@headlessui/react';
 import SupervisorSideBar from './supervisor/SSideBar';
 
 const Assessment = () => {
-    const { data } = useSession()
     const { get, loading, error } = useFetch()
+    const user = usePlatformState((state) => state.user)
+    const [selected, setSelected] = useState(user.regNumber!)
     const tasks = usePlatformState((state) => state.assessment)
-    const [selected, setSelected] = useState(data?.user.regNumber!)
 
     useEffect(() => {
-        get(`/api/assessment?uid=${selected}`).then((response) => {
+        axios.get(`/api/assessment?uid=${selected}`).then((response) => {
             if (response.data != undefined) {
                 usePlatformState.setState((state) => { state.assessment = response.data })
             }
         }).catch(console.log)
-    }, [data, get, selected])
+    }, [get, user.progress, selected])
 
     if (loading) return <div className='flex flex-col h-full'>Loading</div>
     if (error) return <div className='flex flex-col h-full'>Failed to load tasks</div>
 
-    return (<div className={`flex w-full h-full ${data?.user.userType == "supervisor" ? 'justify-between pl-80' : 'justify-center'}`}>
+    return (<div className={`flex w-full h-full ${user.userType == "supervisor" ? 'justify-between pl-80' : 'justify-center'}`}>
         <div className="flex flex-col 2xl:mt-20 w-3/4 2xl:w-2/3 space-y-6 h-full overflow-y-auto mt-5">
-            {data?.user.userType == "student" && tasks.isNotEmpty() && <PDFExport tasks={tasks} student={{
+            {user.userType == "student" && tasks.isNotEmpty() && <PDFExport tasks={tasks} student={{
                 id: selected,
-                programme: data?.user.programme,
-                phone: data?.user.phone, email: data?.user.email,
-                name: `${data?.user.firstName} ${data?.user.lastName}`,
+                programme: user.programme,
+                phone: user.phone, email: user.email,
+                name: `${user.firstName} ${user.lastName}`,
             }} />}
-            {selected != data?.user.regNumber && <SHeader selected={selected} />}
-            {(selected != data?.user.regNumber!) && tasks.isEmpty() && <p className='text-slate-300 text-center'>
-                {data?.user.userType == "supervisor" ? "This student has not added any task yet" : "You have not added any task yet"}
+            {selected != user.regNumber && <SHeader selected={selected} />}
+            {(selected != user.regNumber!) && tasks.isEmpty() && <p className='text-slate-300 text-center'>
+                {user.userType == "supervisor" ? "This student has not added any task yet" : "You have not added any task yet"}
             </p>}
-            {(selected == data?.user.regNumber! && data?.user.userType == "supervisor") && <p className='text-slate-300 text-center'>
+            {(selected == user.regNumber! && user.userType == "supervisor") && <p className='text-slate-300 text-center'>
                 No student selected. Plese use right panel to switch between students
             </p>}
             {tasks.map((task) => <Disclosure key={task.week}>
@@ -75,9 +75,9 @@ const Assessment = () => {
                     </div>
                 )}
             </Disclosure>)}
-            {data?.user.userType != "supervisor" && <AddTask />}
+            {user.userType != "supervisor" && <AddTask />}
         </div>
-        {data?.user.userType == "supervisor" && <SupervisorSideBar selected={selected} setSelected={setSelected} />}
+        {user.userType == "supervisor" && <SupervisorSideBar selected={selected} setSelected={setSelected} />}
     </div>
     )
 }

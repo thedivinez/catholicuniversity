@@ -29,14 +29,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             }
             throw { response: { data: "Incorrect username or password" } }
           } catch (error: any) {
-            console.log(error)
             throw new Error(error.response ? error.response.data : "Failed to connect to server. Please check your internet connection and try again.")
           }
         },
       }),
     ],
     callbacks: {
-      async jwt({ token, user, trigger, session, account }) {
+      async jwt({ token, user, trigger, session }) {
         if (trigger === "update") return { ...token, ...session.user }
         return { ...token, ...user }
       },

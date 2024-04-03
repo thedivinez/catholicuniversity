@@ -11,7 +11,7 @@ export default async function Assessment(req: NextApiRequest, res: NextApiRespon
     } else if (req.method == "GET") {
         await db.query("SELECT * FROM assessment WHERE regNumber=?", [req.query.uid], (error: any, result: any) => {
             if (error) throw error;
-            res.status(200).send({ data: result })
+            res.status(200).send(result)
         });
     } else if (req.method == "PATCH") {
         await db.query(`UPDATE assessment SET ? WHERE id=?`, [req.body, req.body.id], (error: any, result: any) => {

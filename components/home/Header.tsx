@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { FaUser } from "react-icons/fa";
-import { useSession } from "next-auth/react";
+import usePlatformState from "@/hooks/store";
 
 const Header = () => {
-    const { data } = useSession()
+    const user = usePlatformState((state) => state.user)
     return (
         <nav className="flex w-full h-14 border-b border-slate-500/30 items-center p-2 justify-between">
             <div className="flex items-center space-x-1 font-medium">
@@ -25,8 +25,8 @@ const Header = () => {
             </div>
             <div className="flex items-center space-x-3">
                 <div className="flex flex-col items-end -space-y-2 font-medium">
-                    <span className="text-yellow-500 font-semibold">{data?.user.firstName} {data?.user.lastName}</span>
-                    <span className="text-slate-300">{data?.user.userType}</span>
+                    <span className="text-yellow-500 font-semibold">{user.firstName} {user.lastName}</span>
+                    <span className="text-slate-300">{user.userType}</span>
                 </div>
                 <FaUser className="rounded-full overflow-hidden text-slate-500/90 pt-1.5 h-10 w-10 bg-white" />
             </div>

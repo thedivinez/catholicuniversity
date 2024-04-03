@@ -4,25 +4,24 @@ import toast from 'react-hot-toast';
 import { VscSend } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import usePlatformState from '@/hooks/store'
-import { useSession } from 'next-auth/react'
 import { Notification } from '@/types/types';
 import TextInputField from '../TextInputField'
 import CustomToast from '../notifier/CustomToast';
 import React, { useEffect, useState } from 'react'
 
 const Notifications = () => {
-    const { data } = useSession()
     const { get, post, loading, error } = useFetch()
+    const user = usePlatformState((state) => state.user)
     const notifications = usePlatformState((state) => state.notifications)
     const [submiting, setSubmiting] = useState(false)
 
     useEffect(() => {
-        get(`/api/notifications?uid=${data?.user.regNumber}`).then((response) => {
+        get(`/api/notifications?uid=${user.regNumber}`).then((response) => {
             if (response.data != undefined) {
                 usePlatformState.setState((state) => { state.notifications = response.data })
             }
         }).catch((error) => console.log(error))
-    }, [data, get])
+    }, [get, user.regNumber])
 
     if (loading) return <div>Loading</div>
     if (error) return <div>Failed to load notification</div>
@@ -31,7 +30,7 @@ const Notifications = () => {
         e.preventDefault()
         if (!submiting) {
             setSubmiting(true)
-            const notification = { ...e.target.toJson(), supervisor: data?.user.regNumber } as Notification
+            const notification = { ...e.target.toJson(), supervisor: user.regNumber } as Notification
             const response = await post('/api/notifications', notification)
             toast.custom((t) => <CustomToast t={t} type="success" heading="Notifications" message="Notification has been sent" />)
             usePlatformState.setState((state) => { state.notifications.push(response.data) })
@@ -55,10 +54,10 @@ const Notifications = () => {
                 {notifications.isEmpty() && <p className='text-slate-300 text-center'> There are not any notifications available </p>}
                 {notifications.map((notification) => <div key={notification.id} className='bg-slate-600/70 rounded-lg p-2 relative cursor-pointer'>
                     <p className='text-sm'>{notification.message}</p>
-                    {data?.user.userType == "supervisor" && <IoMdClose className='absolute right-1 top-1 text-red-500' onClick={_ => onDelete(notification.id)} />}
+                    {user.userType == "supervisor" && <IoMdClose className='absolute right-1 top-1 text-red-500' onClick={_ => onDelete(notification.id)} />}
                 </div>)}
             </div>
-            {data?.user.userType == "supervisor" &&
+            {user.userType == "supervisor" &&
                 <form className='flex justify-self-end items-end space-x-3' onSubmit={onSubmit}>
                     <TextInputField name='message' placeholder='Enter your message here' multiLine className='outline-none py-1 bg-transparent border-b rounded-none text-white' />
                     <button type='submit'>

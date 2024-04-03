@@ -1,10 +1,10 @@
 import { v4 as uuid } from "uuid"
 import { LuPrinter } from "react-icons/lu";
-import { useSession } from "next-auth/react";
-import { LogBookTable, Student } from "@/types/types";
+import usePlatformState from "@/hooks/store";
 import { createTw } from "react-pdf-tailwind";
 import { IoMdCloseCircle } from "react-icons/io";
 import React, { Fragment, useState } from 'react';
+import { LogBookTable, Student } from "@/types/types";
 import { Dialog, Transition } from "@headlessui/react";
 import { PDFViewer, Document, Page, Text, View, Image } from "@react-pdf/renderer";
 
@@ -24,8 +24,8 @@ interface Props {
 }
 
 const PDFExport: React.FC<Props> = (props) => {
-    const { data: session } = useSession()
     let [isOpen, setIsOpen] = useState(false)
+    const user = usePlatformState((state) => state.user)
 
     return (
         <>
@@ -92,7 +92,7 @@ const PDFExport: React.FC<Props> = (props) => {
                                                             Email : {props.student.email}
                                                         </Text>
                                                         <Text style={tw("text-xl")}>
-                                                            Supervisor : {session?.user.userType == "student" ? session?.user.supervisor : `${session?.user.firstName} ${session?.user.lastName}`}
+                                                            Supervisor : {user.userType == "student" ? user.supervisor : `${user.firstName} ${user.lastName}`}
                                                         </Text>
                                                         <Text style={tw("text-xl")}>
                                                             Programme : {props.student.programme}

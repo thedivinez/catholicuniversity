@@ -14,9 +14,10 @@ import { Dialog, Transition } from '@headlessui/react'
 import CustomOptionsDropdown from "../CustomOptionsDropdown";
 
 export default function AddTask() {
-    const { data } = useSession()
     let [isOpen, setIsOpen] = useState(false)
     const { post, loading, error } = useFetch()
+    const { data: session, update } = useSession()
+    const user = usePlatformState((state) => state.user)
     const [startDate, setStartDate] = useState(new Date());
     const tasks = usePlatformState((state) => state.assessment)
 
@@ -30,11 +31,10 @@ export default function AddTask() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!loading) {
-            const task = { ...e.target.toJson(), regNumber: data?.user.regNumber } as LogBookTable
+            const task = { ...e.target.toJson(), regNumber: user.regNumber } as LogBookTable
             const response = await post('/api/assessment', task)
-            console.log(response.data)
+            update({ ...session, user: { ...user, progress: user.progress + 1 } })
             toast.custom((t) => <CustomToast t={t} type="success" heading="Tasks" message={response.data.message} />)
-            usePlatformState.getState().addNewTask(response.data.task)
         }
     }
 
@@ -91,9 +91,9 @@ export default function AddTask() {
                                             <label className='text-slate-300 font-medium'>Comments</label>
                                             <textarea name="comments" className='px-2 p-1.5 text-white outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
                                         </div>
-                                        <div className={`flex flex-col w-full space-y-1.5 ${data?.user.userType == "student" ? "text-slate-400" : "text-white"}`}>
+                                        <div className={`flex flex-col w-full space-y-1.5 ${user.userType == "student" ? "text-slate-400" : "text-white"}`}>
                                             <label className='font-medium'>Supervisor Comments</label>
-                                            <textarea name="supervisorComment" disabled={data?.user.userType == "student"} className='px-2 p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
+                                            <textarea name="supervisorComment" disabled={user.userType == "student"} className='px-2 p-1.5 outline-none rounded-lg bg-transparent border border-slate-400/60 w-full' />
                                         </div>
                                         <button type="submit" className='bg-yellow-500 py-2 rounded-md hover:bg-yellow-500/90 ml-auto px-10 text-slate-800 font-medium'>Submit</button>
                                     </form>

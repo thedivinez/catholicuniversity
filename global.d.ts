@@ -32,19 +32,7 @@ declare global {
 
 declare module "next-auth" {
   interface Session {
-    user: {
-      phone: string;
-      email: string;
-      programme: string;
-      lastName: string;
-      progress: number;
-      userType: string;
-      regNumber: string;
-      firstName: string;
-      supervisor: string;
-      startingDate: string;
-      organization: string;
-    }
+    user: User
   }
 }
 

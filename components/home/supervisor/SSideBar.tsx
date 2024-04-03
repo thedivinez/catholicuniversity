@@ -10,17 +10,17 @@ interface Props {
 }
 
 const SupervisorSideBar: React.FC<Props> = (props) => {
-    const { data } = useSession()
     const { get, loading, error } = useFetch()
+    const user = usePlatformState((state) => state.user)
     const students = usePlatformState((state) => state.students)
 
     useEffect(() => {
-        get(`/api/students?uid=${data?.user.regNumber}`).then((response) => {
+        get(`/api/students?uid=${user.regNumber}`).then((response) => {
             if (response.data != undefined) {
                 usePlatformState.setState((state) => { state.students = response.data })
             }
         }).catch(console.log)
-    }, [data, get, props.selected])
+    }, [get, props.selected, user.regNumber])
 
     return (
         <aside className='w-44 h-full pb-4 flex flex-col bg-indigo-700/30 text-slate-300 items-center'>

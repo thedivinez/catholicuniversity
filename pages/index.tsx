@@ -8,23 +8,26 @@ import Header from '@/components/home/Header'
 import SideBar from '@/components/home/SideBar'
 
 const Home: NextPage = () => {
-    const { status } = useSession()
+    const { status, data: session } = useSession()
     const sideBarItem = usePlatformState((state) => state.sideBarItem)
 
     if (status === "unauthenticated") Router.replace("/signin")
 
-    if ((status === "authenticated" || status === "loading")) return (
-        <main className="flex max-h-screen h-screen w-screen flex-col items-center justify-between overflow-hidden">
-            <Header />
-            <div className="flex w-full h-full">
-                <SideBar />
-                <div className="w-full flex justify-center">
-                    <sideBarItem.content />
+    if (status === "authenticated") {
+        usePlatformState.setState((state) => { state.user = session.user! })
+        return (
+            <main className="flex max-h-screen h-screen w-screen flex-col items-center justify-between overflow-hidden">
+                <Header />
+                <div className="flex w-full h-full">
+                    <SideBar />
+                    <div className="w-full flex justify-center">
+                        <sideBarItem.content />
+                    </div>
                 </div>
-            </div>
-            <Footer />
-        </main>
-    )
+                <Footer />
+            </main>
+        )
+    }
 
     return (
         <div className="max-w-screen flex h-screen max-h-screen select-none flex-col items-center justify-center text-xs">
